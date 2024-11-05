@@ -1,0 +1,5 @@
+SELECT
+  u.name,u.phone,u.phone_number,u.email,gu.group_id
+FROM
+  users u 
+  INNER JOIN community_group_users gu ON u.id = gu.user_id and u.is_tester <> 1
