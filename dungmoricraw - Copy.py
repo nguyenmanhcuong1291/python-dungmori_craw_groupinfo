@@ -133,7 +133,7 @@ try:
 
     final_df = pd.merge(group_info_df, group_times_df, how='inner', on='group_id')
 
-    change_type_columns = ['group_id', 'vip_session', 'shift_type', 'count_students', 'session_count']
+    change_type_columns = ['group_id', 'vip_session', 'count_students', 'session_count']
 
     for column in change_type_columns:
         final_df[column] = final_df[column].astype(int)
