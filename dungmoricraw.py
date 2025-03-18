@@ -131,6 +131,9 @@ try:
 
     group_times_df = pd.DataFrame(group_times_table_rows, columns=['group_id', 'session_count'])
 
+    
+
+
     final_df = pd.merge(group_info_df, group_times_df, how='inner', on='group_id')
 
     change_type_columns = ['group_id', 'vip_session', 'count_students', 'session_count']
@@ -156,6 +159,42 @@ try:
         axis=1
     )
 
+    time.sleep(2)
+    driver.get('https://dungmori.com/backend/sql-school')
+
+    countinous_missing_student_query_path = os.path.join(current_directory, 'countinous_missing_student.sql')
+
+    with open(countinous_missing_student_query_path, 'r', encoding='utf-8') as file:
+        countinous_missing_student_query = file.read()
+
+    time.sleep(2)
+    countinous_missing_student_query_input = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="txtArea"]'))
+    )
+
+    driver.execute_script("arguments[0].value = arguments[1];", countinous_missing_student_query_input, countinous_missing_student_query)
+
+    time.sleep(2)
+    query_button = driver.find_element(By.XPATH, '//*[@id="sql_manager"]/button')
+    query_button.click()
+
+    time.sleep(5)
+
+    countinous_missing_students_soup = BeautifulSoup(driver.page_source, features="lxml")
+
+    countinous_missing_students_table = countinous_missing_students_soup.find_all('table', class_='table table-bordered')
+
+    if not countinous_missing_students_table:
+        raise ValueError("No group times table found on the page")
+
+    countinous_missing_students_table_rows = []
+    for row in countinous_missing_students_soup.find_all('tbody')[0].find_all('tr'):
+        cells = [cell.get_text() for cell in row.find_all('th')] 
+        countinous_missing_students_table_rows.append(cells)
+
+    countinous_missing_students_df = pd.DataFrame(countinous_missing_students_table_rows, columns=['group_id', 'student_id','continuous_missing_count'])
+    final_countinous_missing_students_df = pd.merge(group_info_df[['group_id','name']],countinous_missing_students_df,how = 'inner', on='group_id')
+
     # Đặt phạm vi (scope)
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
@@ -167,18 +206,21 @@ try:
     # Mở Google Sheet bằng URL hoặc ID
     spreadsheet = client.open_by_url('https://docs.google.com/spreadsheets/d/16c6xG0Rb9u_jkdGsjS7hU8wvDVdvnq2x7V2bhsMF42I/edit?gid=0#gid=0')
     worksheet = spreadsheet.get_worksheet(0)  # Assuming you want to paste into the first worksheet
-
+    countinous_missing_students_worksheet = spreadsheet.get_worksheet(1) 
     # Xóa tất cả dữ liệu trong worksheet
     time.sleep(1)
     worksheet.clear()
-
+    countinous_missing_students_worksheet.clear()
     # Ghi dữ liệu mới vào worksheet
     time.sleep(1)
     set_with_dataframe(worksheet, final_df) 
+
+    # Ghi dữ liệu mới vào worksheet
+    time.sleep(1)
+    set_with_dataframe(countinous_missing_students_worksheet, final_countinous_missing_students_df) 
 
 finally:
     try:
         driver.quit()  
     except Exception as e:
         print(f"Error closing the driver: {e}")
-

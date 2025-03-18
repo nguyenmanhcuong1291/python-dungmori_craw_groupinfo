@@ -21,4 +21,4 @@ SELECT
 								having count(*) > 0
 						) gu_temp on gu_temp.group_id = g.id
 
-					WHERE g.start_date BETWEEN '2024-01-01' AND CURRENT_DATE and g.expired_at >= now()
+					WHERE g.start_date BETWEEN '2024-01-01' AND CURRENT_DATE() and g.expired_at >= now()
