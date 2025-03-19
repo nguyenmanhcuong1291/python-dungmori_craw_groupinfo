@@ -219,6 +219,12 @@ try:
     time.sleep(1)
     set_with_dataframe(countinous_missing_students_worksheet, final_countinous_missing_students_df) 
 
+    spreadsheet2 = client.open_by_url('https://docs.google.com/spreadsheets/d/1iaQHNoFmLn0yYXFoVvd03KvJCDH7kEEiQ3ULRs4UHgo/edit?gid=0#gid=0')
+    worksheet2 = spreadsheet2.get_worksheet(0) 
+    time.sleep(1)
+    last_row = len(worksheet2.get_all_values()) + 1  
+    set_with_dataframe(worksheet2, final_countinous_missing_students_df,include_index=False,include_column_header=False,row=last_row,resize=False)
+
 finally:
     try:
         driver.quit()  
