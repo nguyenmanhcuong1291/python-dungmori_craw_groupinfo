@@ -51,12 +51,12 @@ try:
     password_input.send_keys(password)
 
     time.sleep(2)
-    next_button = WebDriverWait(driver, 10).until(
+    next_button = WebDriverWait(driver, 1000).until(
         EC.element_to_be_clickable((By.XPATH, '/html/body/section/div/div/div/form/div[5]/div/button'))
     )
     next_button.click()
 
-    time.sleep(2)
+    time.sleep(10)
     driver.get("https://dungmori.com/backend/sql")
 
     group_query_path = os.path.join(current_directory, 'group info.sql')
@@ -226,6 +226,7 @@ try:
     set_with_dataframe(worksheet2, final_countinous_missing_students_df,include_index=False,include_column_header=False,row=last_row,resize=False)
 
 finally:
+
     try:
         driver.quit()  
     except Exception as e:
