@@ -192,7 +192,7 @@ try:
         cells = [cell.get_text() for cell in row.find_all('th')] 
         countinous_missing_students_table_rows.append(cells)
 
-    countinous_missing_students_df = pd.DataFrame(countinous_missing_students_table_rows, columns=['group_id', 'student_id','continuous_missing_count'])
+    countinous_missing_students_df = pd.DataFrame(countinous_missing_students_table_rows, columns=['date_attendance','group_id', 'student_id','continuous_missing_count'])
     final_countinous_missing_students_df = pd.merge(group_info_df[['group_id','name']],countinous_missing_students_df,how = 'inner', on='group_id')
 
     # Đặt phạm vi (scope)

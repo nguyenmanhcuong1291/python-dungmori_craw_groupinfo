@@ -1,6 +1,7 @@
 SELECT 
+    max(date_attendance) as date_attendance,
     group_id, 
-    student_id, 
+    student_id,
     COUNT(*) AS continuous_missing_count
 FROM (
     SELECT 
@@ -8,6 +9,7 @@ FROM (
         group_id, 
         student_id, 
         status,
+        date_attendance,
         SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) 
             OVER (PARTITION BY group_id, student_id ORDER BY id DESC) AS grp
     FROM (
@@ -17,7 +19,8 @@ FROM (
 		    s.student_id, 
 		    s.status, 
 		    s.absence_count, 
-		    c.group_id 
+		    c.group_id,
+            c.date_attendance
 		FROM course_time_students_tbl s
 		JOIN course_times_tbl c ON s.course_time_id = c.id
 		WHERE c.group_id IN (
