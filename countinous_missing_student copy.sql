@@ -26,16 +26,16 @@ FROM (
 		WHERE c.group_id IN (
 		    SELECT group_id
 		    FROM course_times_tbl 
-		    where group_id is not null and date_attendance = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+		    where group_id is not null and date_attendance =        DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
 		)  
 
         AND s.student_id IN (
             SELECT student_id
             FROM course_time_students_tbl s  
             JOIN course_times_tbl c ON s.course_time_id = c.id  
-            WHERE c.date_attendance = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY) 
+            WHERE c.date_attendance =                               DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY) 
         )
-		AND c.date_attendance < CURRENT_DATE() 
+		AND c.date_attendance <                                     CURRENT_DATE() 
 		AND c.date_attendance >= DATE_SUB(CURRENT_DATE(), INTERVAL 31 DAY) 
 		ORDER BY s.id DESC
 
